@@ -71,20 +71,20 @@ byte invaderTwo[8] = {
 };
 
 //INVADERS
-const int invader[] = {4, 5, 6};
-int number = 0;
+const int invader[] = {4, 5, 6};  //these will be the 3 invaders (see CHARACTERS)
+int number = 0;                   //number determines wich invader is used 0,1 or 2
 
 //COLUMNS & LINES
 int columnInvader = 0;
 int lineInvader = 0;
 int lineCanon = 0;
-int columnLaser = 15;
+int columnLaser = 15;             //the laser begins at the last column
 int lineLaser = 0;
 
 //OTHER INTS
-int counter = 0;
-int level = 0;
-int difficulty = 3;
+int counter = 0;                  //count how many times the void loop has been completed
+int level = 0;                    //how many invaders you have hit
+int difficulty = 3;               //the lower this number, the faster the invaders will go
 
 //BUTTONS
 const int left = A5;
@@ -107,91 +107,92 @@ void setup() {
 void loop() {
   
 //GOING LEFT/RIGHT
-  int leftValue = analogRead(left);
+  int leftValue = analogRead(left);          //I used analog inputs to make it easier to replace the buttons with something like a potmeter for going left/right
   int rightValue = analogRead(right);
-  if(leftValue > 511 && rightValue < 511){
-    lineCanon = 0;
+  if(leftValue > 511 && rightValue < 511){   //left (left button pressed)
+    lineCanon = 0;                          
   }
-  if(leftValue < 511 && rightValue > 511){
+  if(leftValue < 511 && rightValue > 511){   //right (right button pressed)
     lineCanon = 1;
   }
   
 //SHOOTING  
-  if(leftValue > 511 && rightValue > 511 && columnLaser == 15){
-   lineLaser = lineCanon; 
+  if(leftValue > 511 && rightValue > 511 && columnLaser == 15){ //shooting (both buttons pressed)
+   lineLaser = lineCanon;                    //set laser on the correct line
   }
   if((leftValue > 511 && rightValue > 511) || columnLaser != 15){
     --columnLaser;
     lcd.setCursor(columnLaser, lineLaser);
-    lcd.write(2);
+    lcd.write(2);                            //move and write laser
   }
   if(columnLaser == 0){
-   columnLaser = 15; 
+   columnLaser = 15;                         //reset laser
   }
   
 //ANIMATION  
   lcd.setCursor(15, lineCanon);
-  lcd.write(1);
+  lcd.write(1);                              //write canon
 
   lcd.setCursor(columnInvader, lineInvader);
-  lcd.write(invader[number]);
+  lcd.write(invader[number]);                //write invader
   
   delay(200);
-  lcd.clear();
+  lcd.clear();                               //delay & clear
   
   if(counter == difficulty){
-    counter = 0;
-    ++columnInvader;
+    counter = 0;                             //reset counter
+    ++columnInvader;                         //move invader down
     if(lineInvader == 0){
      lineInvader = 1; 
     }
     else if(lineInvader == 1){
-     lineInvader = 0;
+     lineInvader = 0;                        //change lines
     }
   }
 
 //HITTING  
   if(columnLaser == columnInvader && lineLaser == lineInvader && columnLaser != 15){
   lcd.setCursor(columnLaser, lineInvader);
-  lcd.write(3);
-  columnLaser = 15;
+  lcd.write(3);                            //write poof
+  columnLaser = 15;                        //reset laser
   columnInvader = 0;
-  lineInvader = 0;
-  ++level;
-  ++number;
+  lineInvader = 0;                         //reset invader
+  ++level;                                 //levelup
+  ++number;                                //change invader
   if(number == 3) {
-   number = 0; 
+   number = 0;                             //reset number
   }
-  delay(250);  
+  delay(250);                              //short winners break
   }
 
 //GAME OVER  
   if(columnInvader == 15){
-   for(int gameover = 0; gameover != 5; ++gameover){
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Game Over");
-    lcd.setCursor(0,1);
-    lcd.print("Score: ");
-    lcd.print(level);
-    delay(1000);
-   }
-  columnInvader = 0;
-  lineInvader = 0;
-  counter = -1;
-  columnLaser = 15;
-  level = 0;
-  difficulty = 3; 
+   lcd.clear();
+   lcd.setCursor(0,0);
+   lcd.print("Game Over");
+   lcd.setCursor(0,1);
+   lcd.print("Score: ");
+   lcd.print(level);                       //game over screen with score
+   delay(1000);                            //wait 5 sec before restarting
+ 
+   columnInvader = 0;
+   lineInvader = 0;
+   counter = -1;
+   columnLaser = 15;
+   level = 0;
+   difficulty = 3;                         //reset everything
   }
   
 //INCREASING DIFFICULTY
   if(level == 10 && difficulty == 3){
-   --difficulty; 
-   counter = 0;
+   --difficulty;                           //at level 10 the invaders will move faster
+   counter = 0;                            //reset counter
   }
 
 //COUNTING
- ++counter; 
+ ++counter;                                //counter for animation
 }
-
-
+/*
+Made by Thijs van Beers
+Latest version: 27-5-2014
+*/
