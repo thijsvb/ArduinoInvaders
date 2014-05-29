@@ -1,7 +1,7 @@
 //LCD SETUP
 #include <LiquidCrystal.h>
-const int lcdColumns = 16; //adjust to your own lcd
-const int lcdLines = 2;    //adjust to your own lcd
+const int lcdColumns = 20; //adjust to your own lcd
+const int lcdLines = 4;    //adjust to your own lcd
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
@@ -87,6 +87,7 @@ int lineLaser = 0;
 //OTHER INTS
 int counter = 0;                  //count how many times the void loop has been completed
 int level = 0;                    //how many invaders you have hit
+int highscore = 0;                //the highscore (since last upload/reset)
 int difficulty = 3;               //the lower this number, the faster the invaders will go
 
 //BUTTONS
@@ -181,12 +182,18 @@ void loop() {
 
 //GAME OVER  
   if(columnInvader == lcdColumns - 1){
+   if(level > highscore){
+     highscore = level;
+   }
    lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Game Over");
    lcd.setCursor(0,1);
    lcd.print("Score: ");
-   lcd.print(level);                      //game over screen with score
+   lcd.print(level);                      
+   lcd.setCursor(0,2);
+   lcd.print("Highscore: ");
+   lcd.print(highscore);                  //game over screen with score and highscore (highscore will not show up on a lcd with < 3 lines)
    delay(5000);                           //wait 5 sec before restarting
   
    columnInvader = 0;
@@ -208,5 +215,5 @@ void loop() {
 }
 /*
 Made by Thijs van Beers
-Latest version: 26-5-2014
+Latest version: 29-5-2014
 */
