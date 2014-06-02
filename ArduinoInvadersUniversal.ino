@@ -90,9 +90,17 @@ int level = 0;                    //how many invaders you have hit
 int highscore = 0;                //the highscore (since last upload/reset)
 int difficulty = 3;               //the lower this number, the faster the invaders will go
 
-//BUTTONS
+//CONTROLS
 const int left = A5;
 const int right = A4;
+const int shoot = A3;
+const int stick = A5;             //you can have either a (left) button or a stick/potmeter connected to A5, you will not need both
+int mode = 0;                     //adjust to your preferences (see below)
+/*
+0 = left button, right button, both pressed to shoot
+1 = left button, right button, shoot button
+2 = stick/potmeter for left/right, shoot button
+*/
 
 void setup() {
   
@@ -105,31 +113,63 @@ void setup() {
  lcd.createChar(6, invaderTwo);
  
 //STARTING LCD
- lcd.begin(lcdColumns, lcdLines); 
+ lcd.begin(lcdColumns, lcdLines);
+ Serial.begin(9600); 
 }
 
 void loop() {
-  
+//INPUT VALUES
+  int leftValue = analogRead(left);
+  int rightValue = analogRead(right);
+  int stickValue = analogRead(stick);
+  int shootValue = analogRead(shoot);  
+
 //GOING LEFT/RIGHT
-  int leftValue = analogRead(left);        //I used analog inputs to make it easier to replace the buttons with something like a potmeter for going left/right
-  int rightValue = analogRead(right);      
+ switch (mode) {
+  case 0:
+  case 1:  
   if(leftValue > 511 && rightValue < 511 && lineCanon != 0){            //left (left button pressed)
     --lineCanon;
   }
   if(leftValue < 511 && rightValue > 511 && lineCanon != lcdLines - 1){ //right (right button pressed)
     ++lineCanon;
   }
+  break;
   
-//SHOOTING  
+  case 2:
+  lineCanon = map(stickValue, 0, 1023, 0, lcdLines - 1);                //change the value of the potmeter/stick to a line
+  break;
+ }
+  
+//SHOOTING 
+ switch (mode) {
+  case 0:
   if(leftValue > 511 && rightValue > 511 && columnLaser == lcdColumns - 1){ //shooting (both buttons pressed)
    lineLaser = lineCanon;                 //set laser on the correct line
+   --columnLaser;
+   lcd.setCursor(columnLaser, lineLaser);
+   lcd.write(2);                          //move and write laser
   }
-  if((leftValue > 511 && rightValue > 511) || columnLaser != lcdColumns - 1){
+  
+  break;
+  case 1:
+  case 2:
+  if(shootValue > 511 && columnLaser == lcdColumns - 1){ //shooting (shoot button pressed)
+   lineLaser = lineCanon;                 //set laser on the correct line
+   --columnLaser;
+   lcd.setCursor(columnLaser, lineLaser);
+   lcd.write(2);                          //move and write laser
+  }
+  break;
+  
+ }
+ if(columnLaser != lcdColumns - 1){
     --columnLaser;
     lcd.setCursor(columnLaser, lineLaser);
     lcd.write(2);                         //move and write laser
   }
-  if(columnLaser == 0){
+ 
+ if(columnLaser == 0){
    columnLaser = lcdColumns - 1;          //reset laser
   }
   
