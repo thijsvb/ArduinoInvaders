@@ -1,3 +1,6 @@
+//EEPROM
+#include <EEPROM.h>
+
 //LCD SETUP
 #include <LiquidCrystal.h>
 const int lcdColumns = 20; //adjust to your own lcd
@@ -87,7 +90,7 @@ int lineLaser = 0;
 //OTHER INTS
 int counter = 0;                  //count how many times the void loop has been completed
 int level = 0;                    //how many invaders you have hit
-int highscore = 0;                //the highscore (since last upload/reset)
+int highscore = EEPROM.read(0);   //the highscore (stored on EEPROM so it is saved)
 int difficulty = 3;               //the lower this number, the faster the invaders will go
 
 //CONTROLS
@@ -224,6 +227,7 @@ void loop() {
   if(columnInvader == lcdColumns - 1){
    if(level > highscore){
      highscore = level;
+     EEPROM.write(0, highscore);
    }
    lcd.clear();
    lcd.setCursor(0,0);
