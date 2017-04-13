@@ -16,5 +16,5 @@ install:
 script: 
   - mkdir src
   # Only check one
-  - cp ArduinoInvaders16x2.ino src
+  - cp ArduinoInvadersUniversal.ino src
   - ino build
