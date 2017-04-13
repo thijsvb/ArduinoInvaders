@@ -11,7 +11,7 @@ install:
   - sudo make install
   - sudo easy_install `cat requirements.txt`
   - cd ..
-  - cd ArduinoInvalders
+  - cd ArduinoInvaders
 
 script: 
   - mkdir src
