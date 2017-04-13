@@ -1,0 +1,20 @@
+language: cpp
+compiler: gcc
+
+install:
+  # arduino
+  - sudo apt-get install arduino
+  # ino
+  - cd ..
+  - git clone git://github.com/amperka/ino.git
+  - cd ino
+  - sudo make install
+  - sudo easy_install `cat requirements.txt`
+  - cd ..
+  - cd ArduinoInvalders
+
+script: 
+  - mkdir src
+  # Only check one
+  - cp ArduinoInvaders16x2.ino src
+  - ino build
