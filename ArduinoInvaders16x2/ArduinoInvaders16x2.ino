@@ -87,8 +87,8 @@ int level = 0;                    //how many invaders you have hit
 int difficulty = 3;               //the lower this number, the faster the invaders will go
 
 //BUTTONS
-const int left = A5;
-const int right = A4;
+const int left = A0;
+const int right = A1;
 
 void setup() {
   
